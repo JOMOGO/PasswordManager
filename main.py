@@ -93,8 +93,6 @@ def generate_random_password():
     message_joined = website + ' | ' + username + ' | ' + password_joined
 
     # encrypting
-    # message_joined = message_joined.encode()
-    type(message_joined)
     encrypted_message = cryptocode.encrypt(message_joined, master_pw)
 
     # Put info into database csv file
