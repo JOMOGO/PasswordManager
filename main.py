@@ -1,3 +1,11 @@
+"""
+Name:           Robin Groot
+Version:        2.0
+Inputs:         Password length | amount of letters, digits and special characters | Master password
+Outputs:        Website | Username | Password
+Description:    This program will ask for your inputs to generate a password and save that with the website and username
+Important note: You can use a different master password to create and see new passwords but you can't use it on old ones
+"""
 import string
 import random
 import csv
@@ -5,6 +13,7 @@ import cryptocode
 import os
 
 
+# Gives the last N lines in a file
 def get_last_n_lines(file_name, n):
     # Create an empty list to keep the track of last n lines
     list_of_lines = []
@@ -43,6 +52,27 @@ def get_last_n_lines(file_name, n):
     return list(reversed(list_of_lines))
 
 
+# Asks for inputs and checks if they are numbers then changes them from strings to ints
+def password():
+    # Asks for length of password and the amount of characters of each
+    s_password_length = input("Enter password length: ")
+    s_alphabets_count = input("Enter alphabets count in password: ")
+    s_digits_count = input("Enter digits count in password: ")
+    s_special_characters_count = input("Enter special characters count in password: ")
+    check_int = s_password_length + s_alphabets_count + s_digits_count + s_special_characters_count
+    if check_int.isnumeric():
+        global password_length, alphabets_count, digits_count, special_characters_count, characters_count
+        password_length = int(s_password_length)
+        alphabets_count = int(s_alphabets_count)
+        digits_count = int(s_digits_count)
+        special_characters_count = int(s_special_characters_count)
+        characters_count = alphabets_count + digits_count + special_characters_count
+    else:
+        print("You can only give whole numbers, Try again.")
+        password()
+
+
+# The main function that generates the password based on your inputs
 def generate_random_password():
     # Characters to generate password from
     alphabets = list(string.ascii_letters)
@@ -50,17 +80,13 @@ def generate_random_password():
     special_characters = "!@#$%^&*()"
     characters = list(string.ascii_letters + string.digits + special_characters)
 
-    # Asks for length of password and the amount of characters of each
-    password_length = int(input("Enter password length: "))
-    alphabets_count = int(input("Enter alphabets count in password: "))
-    digits_count = int(input("Enter digits count in password: "))
-    special_characters_count = int(input("Enter special characters count in password: "))
-    characters_count = alphabets_count + digits_count + special_characters_count
+    # Asks for inputs for your password
+    password()
 
     # Give error when the amount of minimum characters is greater then the number of allowed characters
     if characters_count > password_length:
         print("Characters total count is greater than the password length")
-        return
+        password()
 
     # initializing the password
     gen_password = []
@@ -103,21 +129,18 @@ def generate_random_password():
 
 master_pw = input("Pick your master password: ")
 while master_pw == master_pw:
-    what_to_do = input(f"What do you want to do?\nOptions: New, Last or close: ")
+    what_to_do = input(f"What do you want to do?\nOptions: New, Last or Close: ")
     if what_to_do == "new":
-        # Invoking the password generation function.
         generate_random_password()
     elif what_to_do == "last":
+        # Iterate over the list of last n lines and print one by one.
         last_number = int(input("How many passwords do you want to see from newest to oldest."))
-        # Get last three lines from file 'passwords.csv'
         last_lines = get_last_n_lines("passwords.csv", last_number+1)
         print('Last 3 lines of File:\nWebsite | Username | Password')
-        # Iterate over the list of last 3 lines and print one by one
         for line in last_lines:
             line = cryptocode.decrypt(line, master_pw)
             print(line)
-
     elif what_to_do == "close":
         exit()
     else:
-        print(f"No option chosen")
+        print(f"No option chosen, Try again.")
