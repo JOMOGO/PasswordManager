@@ -115,6 +115,7 @@ def generate_random_password():
 
     # Asks for your username and the website
     website = input("On what website is this?")
+    website = website.capitalize().strip()
     username = input("What is the associated username or email for this login?")
     message_joined = website + ' | ' + username + ' | ' + password_joined
 
@@ -127,9 +128,11 @@ def generate_random_password():
         writer.writerow(encrypted_message)
 
 
+# Main loop | Asks for master password and what you want to do
 master_pw = input("Pick your master password: ")
 while master_pw == master_pw:
     what_to_do = input(f"What do you want to do?\nOptions: New, Last or Close: ")
+    what_to_do = what_to_do.strip()
     if what_to_do == "new":
         generate_random_password()
     elif what_to_do == "last":
